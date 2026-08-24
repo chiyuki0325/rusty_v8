@@ -87,7 +87,7 @@ default_args = {
 
   enable_rust = true
   enable_rust_cxx = true
-  v8_enable_temporal_support = true
+  v8_enable_temporal_support = false
 
   # prevent hashdos
   v8_use_default_hasher_secret = false
