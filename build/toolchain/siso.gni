@@ -2,11 +2,23 @@
 
 import("//build/config/gclient_args.gni")
 
+# use_siso_default is default value of use_siso.
+# need to match with autoninja's logic.
+use_siso_default = false
+
+_is_ninja_used = path_exists(rebase_path(".ninja_deps", root_build_dir))
+
+if (path_exists("//build/config/siso/.sisoenv") &&
+    defined(build_with_chromium) && build_with_chromium && !_is_ninja_used) {
+  use_siso_default = true
+}
+
 declare_args() {
-  # rusty_v8 drives Ninja directly, so do not auto-detect Siso here. Besides
-  # being unnecessary, the detection uses path_exists(), which is unavailable
-  # in the GN version shipped by Debian 12.
-  use_siso = false
+  # Placeholder to allow having use_siso in args.gn file.
+  # Explicit `use_siso` in args.gn can override default.
+  # This is used only for autoninja (to dispatch siso or ninja),
+  # and for use_reclient's default.
+  use_siso = use_siso_default
 }
 
 if (use_siso) {

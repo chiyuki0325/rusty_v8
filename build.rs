@@ -1037,8 +1037,15 @@ fn not_in_depot_tools(p: PathBuf) -> bool {
 fn need_gn_ninja_download() -> bool {
   let has_ninja = which("ninja").is_ok_and(not_in_depot_tools)
     || env::var_os("NINJA").is_some();
-  let has_gn =
+  let has_gn_candidate =
     which("gn").is_ok_and(not_in_depot_tools) || env::var_os("GN").is_some();
+  let has_gn = has_gn_candidate
+    && Command::new(gn())
+      .args(["help", "path_exists"])
+      .stdout(Stdio::null())
+      .stderr(Stdio::null())
+      .status()
+      .is_ok_and(|status| status.success());
 
   !has_ninja || !has_gn
 }
